@@ -405,12 +405,26 @@ h1 {
   max-width: 310px;
 }
 
-.product-content strong {
+.price-display {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.price-display del,
+.dialog-product del {
+  color: rgba(7, 31, 57, 0.48);
+  font-size: 18px;
+  text-decoration-color: var(--gold-dark);
+  text-decoration-thickness: 2px;
+}
+
+.price-display strong {
   color: var(--ink);
-  display: block;
   font-size: 34px;
   font-weight: 500;
-  margin: 22px 0;
 }
 
 .product-actions {
@@ -870,9 +884,16 @@ h1 {
 }
 
 .dialog-product span {
+  align-items: baseline;
   color: var(--gold-dark);
+  display: flex;
   font-size: 15px;
+  gap: 8px;
   margin-top: 3px;
+}
+
+.dialog-product del {
+  font-size: 13px;
 }
 
 .dialog-form label {

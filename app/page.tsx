@@ -30,6 +30,7 @@ type Product = {
   key: ProductKey;
   name: string;
   shortName: string;
+  originalPrice: number;
   price: number;
   tagline: string;
   image: string;
@@ -41,7 +42,8 @@ const products: Product[] = [
     key: "500ml",
     name: "500 ml Gangajal",
     shortName: "500 ml",
-    price: 499,
+    originalPrice: 4999,
+    price: 3999,
     tagline: "Daily puja",
     image: "/images/gangotri-crystal-cutout.png",
     description: "Ideal for daily puja, abhishek and personal spiritual use."
@@ -50,7 +52,8 @@ const products: Product[] = [
     key: "1litre",
     name: "1 Litre Gangajal",
     shortName: "1 Litre",
-    price: 899,
+    originalPrice: 10000,
+    price: 8999,
     tagline: "Home temple",
     image: "/images/gangotri-kalash-cutout.png",
     description: "Perfect for home temples, special rituals and ceremonies."
@@ -178,7 +181,8 @@ export default function HomePage() {
         name: product.name,
         sku: product.key,
         quantity: quantities[product.key],
-        price: currency.format(product.price)
+        price: currency.format(product.price),
+        originalPrice: currency.format(product.originalPrice)
       }))
     };
 
@@ -287,7 +291,7 @@ export default function HomePage() {
                 <p>{product.tagline}</p>
                 <h3>{product.name}</h3>
                 <span>{product.description}</span>
-                <strong>{currency.format(product.price)}</strong>
+                <PriceDisplay originalPrice={product.originalPrice} price={product.price} />
                 <div className="product-actions">
                   <QuantityControl
                     label={`${product.name} quantity`}
@@ -350,7 +354,7 @@ export default function HomePage() {
       </section>
 
       <section className="final-cta">
-        <Image src="/images/gangotri-river.jfif" alt="" fill sizes="100vw" aria-hidden="true" />
+        <Image src="/images/gangotri-river.jpg" alt="" fill sizes="100vw" aria-hidden="true" />
         <div>
           <p className="eyebrow">Bring the Sacred Home</p>
           <h2>
@@ -368,7 +372,7 @@ export default function HomePage() {
 
       <footer className="site-footer">
         <strong>Gangotri</strong>
-        <span>© {new Date().getFullYear()} Gangotri · Sacred Gangajal · Made with devotion</span>
+        <span>Powered by Arevei · © {new Date().getFullYear()} Gangotri</span>
         <button type="button" onClick={() => openOrder()}>
           Order
         </button>
@@ -383,6 +387,15 @@ function SectionHeading({ kicker, title }: { kicker: string; title: string }) {
       <p className="section-kicker">{kicker}</p>
       <h2>{title}</h2>
       <span />
+    </div>
+  );
+}
+
+function PriceDisplay({ originalPrice, price }: { originalPrice: number; price: number }) {
+  return (
+    <div className="price-display">
+      <del>{currency.format(originalPrice)}</del>
+      <strong>{currency.format(price)}</strong>
     </div>
   );
 }
@@ -470,7 +483,10 @@ function OrderDialog({
                   <div className="dialog-product" key={product.key}>
                     <div>
                       <strong>{product.name}</strong>
-                      <span>{currency.format(product.price)}</span>
+                      <span>
+                        <del>{currency.format(product.originalPrice)}</del>
+                        {currency.format(product.price)}
+                      </span>
                     </div>
                     <QuantityControl
                       label={`${product.name} modal quantity`}
