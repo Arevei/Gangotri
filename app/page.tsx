@@ -307,7 +307,7 @@ export default function HomePage() {
 
       <section id="journey" className="journey">
         <div className="journey-image">
-          <Image src="/images/gangotri-river.jfif" alt="Gangotri temple by a Himalayan river" fill sizes="(max-width: 900px) 100vw, 45vw" />
+          <Image src="/images/gangotri-river.jpg" alt="Gangotri temple by a Himalayan river" fill sizes="(max-width: 900px) 100vw, 45vw" />
         </div>
         <div className="journey-copy">
           <p className="section-kicker">The Sacred Journey</p>
