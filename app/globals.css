@@ -796,10 +796,26 @@ h1 {
 
 .dialog-form {
   display: grid;
-  gap: 16px;
+  grid-template-rows: minmax(0, 1fr) auto;
   max-height: min(880px, calc(100vh - 48px));
+  overflow: hidden;
+}
+
+.dialog-scroll {
+  display: grid;
+  gap: 16px;
   overflow-y: auto;
-  padding: 34px;
+  padding: 34px 34px 18px;
+}
+
+.dialog-sticky-footer {
+  background:
+    linear-gradient(180deg, rgba(255, 250, 240, 0), var(--paper) 16px),
+    var(--paper);
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  padding: 20px 34px 28px;
 }
 
 .dialog-heading h2 {
@@ -818,6 +834,16 @@ h1 {
 .dialog-products {
   display: grid;
   gap: 10px;
+}
+
+.empty-cart {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: rgba(7, 31, 57, 0.66);
+  line-height: 1.45;
+  margin: 0;
+  padding: 14px 16px;
 }
 
 .dialog-product {
@@ -907,10 +933,10 @@ h1 {
   align-items: center;
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 10px;
   display: flex;
   justify-content: space-between;
-  padding: 18px 20px;
+  padding: 14px 18px;
 }
 
 .dialog-total span {
@@ -918,7 +944,7 @@ h1 {
 }
 
 .dialog-total strong {
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 500;
 }
 
@@ -1084,7 +1110,15 @@ h1 {
   }
 
   .dialog-form {
-    padding: 26px 18px 22px;
+    padding: 0;
+  }
+
+  .dialog-scroll {
+    padding: 26px 18px 16px;
+  }
+
+  .dialog-sticky-footer {
+    padding: 16px 18px 20px;
   }
 
   .field-row,

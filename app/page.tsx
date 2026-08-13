@@ -58,7 +58,7 @@ const products: Product[] = [
 ];
 
 const initialQuantities: Record<ProductKey, number> = {
-  "500ml": 1,
+  "500ml": 0,
   "1litre": 0
 };
 
@@ -129,11 +129,16 @@ export default function HomePage() {
     }));
   };
 
-  const openOrder = (key: ProductKey = "500ml") => {
-    setQuantities((current) => ({
-      ...current,
-      [key]: Math.max(1, current[key])
-    }));
+  const openOrder = (key?: ProductKey) => {
+    setQuantities((current) => {
+      const hasItems = Object.values(current).some((quantity) => quantity > 0);
+      const nextKey = key || "500ml";
+
+      return {
+        ...current,
+        [nextKey]: key || !hasItems ? Math.max(1, current[nextKey]) : current[nextKey]
+      };
+    });
     setStatus("idle");
     setMessage("");
     setDialogOpen(true);
@@ -147,6 +152,7 @@ export default function HomePage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const form = event.currentTarget;
     setStatus("submitting");
     setMessage("");
 
@@ -156,7 +162,7 @@ export default function HomePage() {
       return;
     }
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(form);
     const payload = {
       customer: {
         name: String(formData.get("name") || ""),
@@ -190,7 +196,7 @@ export default function HomePage() {
 
       setStatus("success");
       setMessage(`Preorder confirmed. Your booking ID is ${result.orderId}.`);
-      event.currentTarget.reset();
+      form.reset();
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Unable to place your preorder.");
@@ -205,6 +211,7 @@ export default function HomePage() {
         handleSubmit={handleSubmit}
         message={message}
         quantities={quantities}
+        selectedItems={selectedItems}
         status={status}
         total={total}
         updateQuantity={updateQuantity}
@@ -232,7 +239,7 @@ export default function HomePage() {
 
       <section id="top" className="hero">
         <div className="hero-background" aria-hidden="true">
-          <Image src="/images/gangotri-hero-scene.png" alt="" fill priority sizes="100vw" />
+          <Image src="/images/gangotri-day-hero-clean.png" alt="" fill priority sizes="100vw" />
         </div>
         <div className="hero-copy">
           <p className="eyebrow">Sacred · Authentic · Pure</p>
@@ -253,10 +260,10 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="hero-gallery" aria-label="Gangotri product showcase">
+        {/* <div className="hero-gallery" aria-label="Gangotri product showcase">
           <Image src="/images/gangotri-crystal-cutout.png" alt="Crystal Gangajal vial" width={330} height={496} priority />
           <Image src="/images/gangotri-kalash-cutout.png" alt="Ornate Gangajal kalash" width={390} height={586} priority />
-        </div>
+        </div> */}
       </section>
 
       <section className="trust-row" aria-label="Gangotri promises">
@@ -322,7 +329,7 @@ export default function HomePage() {
       </section>
 
       <section className="devotion-band" aria-label="Gangotri devotion message">
-        <Image src="/images/gangotri-band.png" alt="" fill sizes="100vw" />
+        <Image src="/images/gangotri-night-banner-clean.png" alt="" fill sizes="100vw" />
         <div>
           <h2>Packed with care and purity, from the heart of Gangotri.</h2>
           <span />
@@ -410,6 +417,7 @@ function OrderDialog({
   handleSubmit,
   message,
   quantities,
+  selectedItems,
   status,
   total,
   updateQuantity
@@ -419,6 +427,7 @@ function OrderDialog({
   handleSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>;
   message: string;
   quantities: Record<ProductKey, number>;
+  selectedItems: Product[];
   status: "idle" | "submitting" | "success" | "error";
   total: number;
   updateQuantity: (key: ProductKey, change: number) => void;
@@ -448,79 +457,87 @@ function OrderDialog({
         </div>
 
         <form className="dialog-form" onSubmit={handleSubmit}>
-          <div className="dialog-heading">
-            <p className="section-kicker">Pre-Order</p>
-            <h2 id="order-title">Reserve Your Gangajal</h2>
-            <span>We will confirm payment and delivery after your booking.</span>
+          <div className="dialog-scroll">
+            <div className="dialog-heading">
+              <p className="section-kicker">Pre-Order</p>
+              <h2 id="order-title">Reserve Your Gangajal</h2>
+              <span>We will confirm payment and delivery after your booking.</span>
+            </div>
+
+            <div className="dialog-products">
+              {selectedItems.length > 0 ? (
+                selectedItems.map((product) => (
+                  <div className="dialog-product" key={product.key}>
+                    <div>
+                      <strong>{product.name}</strong>
+                      <span>{currency.format(product.price)}</span>
+                    </div>
+                    <QuantityControl
+                      label={`${product.name} modal quantity`}
+                      quantity={quantities[product.key]}
+                      onDecrease={() => updateQuantity(product.key, -1)}
+                      onIncrease={() => updateQuantity(product.key, 1)}
+                    />
+                  </div>
+                ))
+              ) : (
+                <p className="empty-cart">Your cart is empty. Add a Gangajal offering to continue.</p>
+              )}
+            </div>
+
+            <label>
+              Full Name*
+              <span><Home size={16} /><input name="name" required placeholder="Your name" /></span>
+            </label>
+            <div className="field-row">
+              <label>
+                Phone*
+                <span><Phone size={16} /><input name="phone" required inputMode="tel" placeholder="10-digit mobile" /></span>
+              </label>
+              <label>
+                Email*
+                <span><Mail size={16} /><input type="email" name="email" required placeholder="you@email.com" /></span>
+              </label>
+            </div>
+            <label>
+              Address*
+              <span><MapPin size={16} /><input name="address" required placeholder="House no, street, area" /></span>
+            </label>
+            <div className="field-row">
+              <label>
+                City*
+                <input name="city" required placeholder="City" />
+              </label>
+              <label>
+                State*
+                <input name="state" required placeholder="State" />
+              </label>
+              <label>
+                Pincode*
+                <input name="pincode" required inputMode="numeric" placeholder="6-digit" />
+              </label>
+            </div>
+            <label>
+              Notes
+              <textarea name="notes" rows={3} placeholder="Any special request" />
+            </label>
           </div>
 
-          <div className="dialog-products">
-            {products.map((product) => (
-              <div className="dialog-product" key={product.key}>
-                <div>
-                  <strong>{product.name}</strong>
-                  <span>{currency.format(product.price)}</span>
-                </div>
-                <QuantityControl
-                  label={`${product.name} modal quantity`}
-                  quantity={quantities[product.key]}
-                  onDecrease={() => updateQuantity(product.key, -1)}
-                  onIncrease={() => updateQuantity(product.key, 1)}
-                />
-              </div>
-            ))}
+          <div className="dialog-sticky-footer">
+            <div className="dialog-total">
+              <span>Total (pay on delivery)</span>
+              <strong>{currency.format(total)}</strong>
+            </div>
+            <button className="submit-button" type="submit" disabled={status === "submitting"}>
+              {status === "submitting" ? "Confirming..." : "Confirm Pre-Order"} <ArrowRight size={18} />
+            </button>
+            {message && (
+              <p className={`form-message ${status}`}>
+                {status === "success" && <CheckCircle2 size={18} />}
+                {message}
+              </p>
+            )}
           </div>
-
-          <label>
-            Full Name*
-            <span><Home size={16} /><input name="name" required placeholder="Your name" /></span>
-          </label>
-          <div className="field-row">
-            <label>
-              Phone*
-              <span><Phone size={16} /><input name="phone" required inputMode="tel" placeholder="10-digit mobile" /></span>
-            </label>
-            <label>
-              Email*
-              <span><Mail size={16} /><input type="email" name="email" required placeholder="you@email.com" /></span>
-            </label>
-          </div>
-          <label>
-            Address*
-            <span><MapPin size={16} /><input name="address" required placeholder="House no, street, area" /></span>
-          </label>
-          <div className="field-row">
-            <label>
-              City*
-              <input name="city" required placeholder="City" />
-            </label>
-            <label>
-              State*
-              <input name="state" required placeholder="State" />
-            </label>
-            <label>
-              Pincode*
-              <input name="pincode" required inputMode="numeric" placeholder="6-digit" />
-            </label>
-          </div>
-          <label>
-            Notes
-            <textarea name="notes" rows={3} placeholder="Any special request" />
-          </label>
-
-          <div className="dialog-total">
-            <span>Total (pay on delivery)</span>
-            <strong>{currency.format(total)}</strong>
-          </div>
-          <button className="submit-button" type="submit" disabled={status === "submitting"}>
-            {status === "submitting" ? "Confirming..." : "Confirm Pre-Order"} <ArrowRight size={18} />
-          </button>
-          {message && (
-            <p className={`form-message ${status}`}>
-              {status === "success" && <CheckCircle2 size={18} />}
-              {message}
-            </p>
-          )}
         </form>
       </section>
     </div>
