@@ -43,7 +43,7 @@ const products: Product[] = [
     shortName: "500 ml",
     price: 499,
     tagline: "Daily puja",
-    image: "/images/gangotri-crystal.png",
+    image: "/images/gangotri-crystal-cutout.png",
     description: "Ideal for daily puja, abhishek and personal spiritual use."
   },
   {
@@ -52,7 +52,7 @@ const products: Product[] = [
     shortName: "1 Litre",
     price: 899,
     tagline: "Home temple",
-    image: "/images/gangotri-kalash.png",
+    image: "/images/gangotri-kalash-cutout.png",
     description: "Perfect for home temples, special rituals and ceremonies."
   }
 ];
@@ -232,7 +232,7 @@ export default function HomePage() {
 
       <section id="top" className="hero">
         <div className="hero-background" aria-hidden="true">
-          <Image src="/images/gangotri-reference.png" alt="" fill priority sizes="100vw" />
+          <Image src="/images/gangotri-hero-scene.png" alt="" fill priority sizes="100vw" />
         </div>
         <div className="hero-copy">
           <p className="eyebrow">Sacred · Authentic · Pure</p>
@@ -254,13 +254,8 @@ export default function HomePage() {
         </div>
 
         <div className="hero-gallery" aria-label="Gangotri product showcase">
-          <div className="hero-card crystal-card">
-            <Image src="/images/gangotri-crystal.png" alt="Crystal Gangajal vial" fill priority sizes="(max-width: 900px) 52vw, 310px" />
-          </div>
-          <div className="hero-card kalash-card">
-            <Image src="/images/gangotri-kalash.png" alt="Ornate Gangajal kalash" fill priority sizes="(max-width: 900px) 58vw, 360px" />
-          </div>
-          <div className="purity-pill">Pavitra Gangajal · 100% Pure</div>
+          <Image src="/images/gangotri-crystal-cutout.png" alt="Crystal Gangajal vial" width={330} height={496} priority />
+          <Image src="/images/gangotri-kalash-cutout.png" alt="Ornate Gangajal kalash" width={390} height={586} priority />
         </div>
       </section>
 
@@ -294,8 +289,8 @@ export default function HomePage() {
                     onIncrease={() => updateQuantity(product.key, 1)}
                   />
                   <button className="cart-button" type="button" onClick={() => openOrder(product.key)}>
-                    <ShoppingBag size={16} /> Order Now
-                  </button>
+                  <ShoppingBag size={16} /> Add to Cart
+                </button>
                 </div>
               </div>
             </article>
@@ -305,7 +300,7 @@ export default function HomePage() {
 
       <section id="journey" className="journey">
         <div className="journey-image">
-          <Image src="/images/gangotri-reference.png" alt="Gangotri products by a Himalayan river" fill sizes="(max-width: 900px) 100vw, 45vw" />
+          <Image src="/images/gangotri-river.jfif" alt="Gangotri temple by a Himalayan river" fill sizes="(max-width: 900px) 100vw, 45vw" />
         </div>
         <div className="journey-copy">
           <p className="section-kicker">The Sacred Journey</p>
@@ -326,11 +321,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="marquee-band" aria-label="Gangotri devotion message">
-        <div className="marquee-track">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <span key={index}>Packed with care & purity from the heart of Gangotri</span>
-          ))}
+      <section className="devotion-band" aria-label="Gangotri devotion message">
+        <Image src="/images/gangotri-band.png" alt="" fill sizes="100vw" />
+        <div>
+          <h2>Packed with care and purity, from the heart of Gangotri.</h2>
+          <span />
         </div>
       </section>
 
@@ -348,7 +343,7 @@ export default function HomePage() {
       </section>
 
       <section className="final-cta">
-        <Image src="/images/gangotri-kalash.png" alt="" width={460} height={460} aria-hidden="true" />
+        <Image src="/images/gangotri-river.jfif" alt="" fill sizes="100vw" aria-hidden="true" />
         <div>
           <p className="eyebrow">Bring the Sacred Home</p>
           <h2>
@@ -445,7 +440,7 @@ function OrderDialog({
           <X size={18} />
         </button>
         <div className="dialog-visual">
-          <Image src="/images/gangotri-kalash.png" alt="Gangotri kalash" fill sizes="360px" />
+          <Image src="/images/gangotri-kalash-cutout.png" alt="Gangotri kalash" width={260} height={390} />
           <div>
             <span>Book Now · Pay Later</span>
             <strong>No online payment needed</strong>
